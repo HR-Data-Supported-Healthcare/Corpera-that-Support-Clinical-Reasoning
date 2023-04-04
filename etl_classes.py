@@ -1,33 +1,44 @@
-"""
-Basic ETL proces to create a corpora ready for annotation (NER) step.
-Unoptimized.
-docx data should be stored in `DATA_LOC` destination for file to work
-"""
-
 from docx import Document
 import os
-from datetime import datetime
 import jsonpickle
+from docxcompose.composer import Composer
+import os
 
-#CONSTANTS
-#TODO Implement flags
-LEMMATIZATION_FLAG = False
-STEMMING_FLAG = False
-STOP_WORDS_FLAG = False
-DATA_LOC =  "./data"
+#TODO: Abstract class with abc lib? Does not make much sense with static methods
+#TODO: Perhaps classes can be stored in seperate files for less total imports
+#TODO: Revise class structure idea, might not be necessary
 
-#PUBLIC VARIABLES
+class AbstractETL():
+    """
+    Class which can be used for ETL subclasses
+    """
+    @staticmethod
+    def extract(data_dir)-> list[Document]:
+        """ TODO: Docstring """
+        doc_list : list [Document] = []
+        for filename in os.listdir(data_dir):
+            doc_list.append((Document(f"{data_dir}/{filename}"), filename))
+        return doc_list
 
-#FUNCTIONS
-def Extract() -> list[Document]:
-    doc_list : list [Document] = []
-    for filename in os.listdir(DATA_LOC):
-        doc_list.append((Document(f"{DATA_LOC}/{filename}"), filename))
-    return doc_list
+    #@abc.abstractmethod
+    @staticmethod
+    def transform(data):
+        """ TODO: Docstring """
+        pass
 
-def Transform(doc_list):
+    #@abc.abstractmethod
+    @staticmethod
+    def load(dest_str: str, data):
+        """ TODO: Docstring """
+        pass
+
+
+class DemoETL(AbstractETL):
+    """ TODO: Docstring """
+    def transform(data):
+        """ TODO: Docstring """
         corpora_obj = {}
-        for current_doc, filename in doc_list:
+        for current_doc, filename in data:
             print(len(current_doc.paragraphs))
             corpora : list[list] = []
             i: int = 0
@@ -79,14 +90,34 @@ def Transform(doc_list):
                 i += 1
             corpora_obj[filename] = corpora
         return corpora_obj
+    
+    @staticmethod
+    def load(dest_str: str, data):
+        """
+        TODO: Docstring
+        """
+        json_str = jsonpickle.encode(data)
+        with open (dest_str, "w") as f:
+            f.write(json_str)
+    
+class AggregateETL(AbstractETL):
+    """ TODO: DOCSTRING """
+    @staticmethod
+    def transform(data: list[Document]):
+        """ TODO: DOCSTRING """
+        #reasignment for name clarity
+        docx_files = data 
+        number_of_sections=len(docx_files)
+        #TODO: Check len for out of range
+        master = data[0][0] #TODO: Might want to select master file manually using param
+        composer = Composer(master)
+        for i in range(1, number_of_sections):
+            doc_temp = docx_files[i][0]
+            composer.append(doc_temp)
+        #composer.save("combined_file.docx")
+        return composer
 
-def Load(dest_str: str, data):
-    json_str = jsonpickle.encode(data)
-    with open (dest_str, "w") as f:
-         f.write(json_str)
-
-if __name__ == "__main__":
-    extracted_data = Extract()
-    transformed_data = Transform(extracted_data)
-    load_dir = "./output"
-    Load(f"{load_dir}/Demo {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.json", transformed_data)
+    @staticmethod
+    def load(dest_str: str, data: Composer):
+        """ TODO: Docstring """
+        data.save(dest_str)
