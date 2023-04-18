@@ -21,20 +21,15 @@ OUTPUT_DIR = "./output"
 
 #FUNCTIONS
 def use_demo_etl():
-    extracted_data = DemoETL.extract(DATA_DIR)
-    transformed_data = DemoETL.transform(extracted_data)
-    DemoETL.load(f"{OUTPUT_DIR}/Demo {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.json", transformed_data)
+    DemoETL(DATA_DIR, f"{OUTPUT_DIR}/Demo {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.json")
 
 def use_dynamic_etl():
     pass
 
 def use_aggregate_etl():
-    extracted_data = AggregateETL.extract(DATA_DIR)
-    print(extracted_data)
-    transformed_data = AggregateETL.transform(extracted_data)
-    AggregateETL.load(f"{OUTPUT_DIR}/Aggre {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx", transformed_data)
+    AggregateETL(DATA_DIR, f"{OUTPUT_DIR}/Aggre {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx")
 
 if __name__ == "__main__":
-    #Select which pipeline to use (uncomment)
-    use_demo_etl()
-    #use_aggregate_etl()
+    ###Select which pipeline to use (uncomment)
+    #use_demo_etl()
+    use_aggregate_etl()
