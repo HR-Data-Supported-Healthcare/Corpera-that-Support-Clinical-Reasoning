@@ -25,6 +25,9 @@ def use_demo_etl():
     transformed_data = DemoETL.transform(extracted_data)
     DemoETL.load(f"{OUTPUT_DIR}/Demo {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.json", transformed_data)
 
+def use_dynamic_etl():
+    pass
+
 def use_aggregate_etl():
     extracted_data = AggregateETL.extract(DATA_DIR)
     print(extracted_data)
