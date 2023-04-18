@@ -7,21 +7,21 @@ class PromptSystem:
             {"text": "Do you want to remove stop words?", "key": "STOP_WORDS_FLAG"},
             {"text": "Do you want to remove headings?", "key": "HEADINGS_FLAG"}
         ]
+        self.skip_stemming = False
 
     def ask_question(self, prompt):
-        skip_stemming = False
         while True:
             print('\n'*100)
 
-            if prompt["key"] == "STEMMING_FLAG" and skip_stemming:
-                continue
+            if prompt["key"] == "STEMMING_FLAG" and self.skip_stemming:
+                break
             
             answer = input(prompt["text"] + " (y/n) ")
 
             if answer.lower() == "y":
                 self.user_answers[prompt["key"]] = True
                 if prompt["key"] == "LEMMATIZATION_FLAG":
-                    skip_stemming = True
+                    self.skip_stemming = True
                 break
             
             elif answer.lower() == "n":
