@@ -6,6 +6,7 @@ output directory should be stored in constant `OUTPUT_DIR`
 """
 
 from datetime import datetime
+from prompt_generator import PromptSystem
 from etl_classes import DemoETL, AggregateETL
 
 #TODO: "Implement flags
@@ -34,7 +35,20 @@ def use_aggregate_etl():
     transformed_data = AggregateETL.transform(extracted_data)
     AggregateETL.load(f"{OUTPUT_DIR}/Aggre {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx", transformed_data)
 
+def set_flags(user_answers):
+    global LEMMATIZATION_FLAG
+    LEMMATIZATION_FLAG = user_answers["LEMMATIZATION_FLAG"]
+
+    global STEMMING_FLAG 
+    STEMMING_FLAG = user_answers["STEMMING_FLAG"]
+
+    global STOP_WORDS_FLAG 
+    STOP_WORDS_FLAG = user_answers["STOP_WORDS_FLAG"]
+
 if __name__ == "__main__":
     #Select which pipeline to use (uncomment)
+    prompt_system = PromptSystem()
+    prompt_system.run()
+    set_flags(prompt_system.user_answers)
     use_demo_etl()
     #use_aggregate_etl()
