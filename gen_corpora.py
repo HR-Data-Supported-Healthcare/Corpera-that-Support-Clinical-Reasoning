@@ -13,9 +13,12 @@ from etl_classes import DemoETL, AggregateETL
 #TODO: Comments/docstrings
 
 #CONSTANTS
-LEMMATIZATION_FLAG = False
-STEMMING_FLAG = False
-STOP_WORDS_FLAG = False
+flag_dict = {
+"stop_words": False,
+"lemmatisation": False,
+"stemming": False,
+"heading": False
+}
 
 DATA_DIR =  "./data"
 OUTPUT_DIR = "./output"
@@ -31,20 +34,17 @@ def use_aggregate_etl():
     AggregateETL(DATA_DIR, f"{OUTPUT_DIR}/Aggre {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx")
 
 def set_flags(user_answers):
-    global LEMMATIZATION_FLAG
-    LEMMATIZATION_FLAG = user_answers["LEMMATIZATION_FLAG"]
+    global flag_dict
 
-    global STEMMING_FLAG 
-    STEMMING_FLAG = user_answers["STEMMING_FLAG"]
-
-    global STOP_WORDS_FLAG 
-    STOP_WORDS_FLAG = user_answers["STOP_WORDS_FLAG"]
+    flag_dict["lemmatisation"] = user_answers["LEMMATIZATION_FLAG"]
+    flag_dict["stemming"] = user_answers["STEMMING_FLAG"]
+    flag_dict["stop_words"] = user_answers["STOP_WORDS_FLAG"]
+    flag_dict["heading"] = user_answers["HEADINGS_FLAG"]
 
 if __name__ == "__main__":
     prompt_system = PromptSystem()
     prompt_system.run()
     set_flags(prompt_system.user_answers)
-    print(STOP_WORDS_FLAG)
     
     ###Select which pipeline to use (uncomment)
     #use_demo_etl()
