@@ -6,7 +6,7 @@ output directory should be stored in constant `OUTPUT_DIR`
 """
 
 from datetime import datetime
-from etl_classes import DemoETL, AggregateETL, DynamicETL
+from etl_classes import DemoETL, AggregateETL
 
 #TODO: "Implement flags
 #TODO: Comments/docstrings
@@ -24,7 +24,7 @@ def use_demo_etl():
     DemoETL(DATA_DIR, f"{OUTPUT_DIR}/Demo {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.json")
 
 def use_dynamic_etl():
-    DynamicETL(DATA_DIR, f"{OUTPUT_DIR}/Dynamic {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx")
+    pass
 
 def use_aggregate_etl():
     AggregateETL(DATA_DIR, f"{OUTPUT_DIR}/Aggre {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx")
