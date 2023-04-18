@@ -46,9 +46,11 @@ def set_flags(user_answers):
     STOP_WORDS_FLAG = user_answers["STOP_WORDS_FLAG"]
 
 if __name__ == "__main__":
-    #Select which pipeline to use (uncomment)
     prompt_system = PromptSystem()
     prompt_system.run()
     set_flags(prompt_system.user_answers)
+    print(STOP_WORDS_FLAG)
+    
+    #Select which pipeline to use (uncomment)
     use_demo_etl()
     #use_aggregate_etl()
