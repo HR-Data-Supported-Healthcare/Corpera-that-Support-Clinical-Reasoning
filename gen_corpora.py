@@ -25,12 +25,6 @@ CONFIG = {"paragraph_filters" : { "headings": HEADINGS_FLAG, "bibliography" : BI
         "text_transformations" : 
           {"stop_words" : STOP_WORDS_FLAG, "stemming" : STEMMING_FLAG, "lemmatization": LEMMATIZATION_FLAG}
           }
-flag_dict = {
-"stop_words": False,
-"lemmatisation": False,
-"stemming": False,
-"heading": False
-}
 
 DATA_DIR =  "./data"
 OUTPUT_DIR = "./output"
@@ -46,12 +40,12 @@ def use_aggregate_etl():
     AggregateETL(DATA_DIR, f"{OUTPUT_DIR}/Aggre {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx")
 
 def set_flags(user_answers):
-    global flag_dict
+    global CONFIG
 
-    flag_dict["lemmatisation"] = user_answers["LEMMATIZATION_FLAG"]
-    flag_dict["stemming"] = user_answers["STEMMING_FLAG"]
-    flag_dict["stop_words"] = user_answers["STOP_WORDS_FLAG"]
-    flag_dict["heading"] = user_answers["HEADINGS_FLAG"]
+    CONFIG["text_transformations"]["lemmatization"] = user_answers["LEMMATIZATION_FLAG"]
+    CONFIG["text_transformations"]["stop_words"] = user_answers["STOP_WORDS_FLAG"]
+    CONFIG["paragraph_filters"]["headings"] = user_answers["HEADINGS_FLAG"]
+    CONFIG["text_transformations"]["stemming"] = user_answers["STEMMING_FLAG"]
 
 if __name__ == "__main__":
     prompt_system = PromptSystem()
