@@ -78,20 +78,57 @@ class DemoETL(BaseETL):
 
 class DynamicETL(BaseETL):
     """ TODO: Docstring """
-    def _transform(self, data: list[Document], flag_dict={}, ):
-        """ TODO: Docstring """ #TODO: stemming and lemmatisation -> apply_stemming, apply_lemmatisation
 
-        for paragraph in data:
-            if flag_dict["stop_words"] is True:
-                paragraph["text"] = ParagraphModifier.remove_stop_words(paragraph["text"])
-            if flag_dict["lemmatisation"] is True:
-                paragraph["text"] = ParagraphModifier.lemmatisation(paragraph["text"])
-            if flag_dict["stemming"] is True:
-                paragraph["text"] = ParagraphModifier.stemming(paragraph["text"])
-            if flag_dict["heading"] is True:
-                paragraph = ParagraphModifier.stemming(paragraph)
+    def __init__(self, data_dir: str, dest_dir: str, flag_dict: dict):
+        self._execute_etl(data_dir, dest_dir, flag_dict)
 
-    def _load(dest_str: str, data):
+    def _execute_etl(self, data_dir: str, dest_dir: str, flag_dict: dict) -> None:
+        extracted_data = self._extract(data_dir)
+        transformed_data = self._transform(extracted_data, flag_dict)
+        self._load(dest_dir, transformed_data)
+
+    def _transform(self, data: list[Document], flag_dict: dict={}, ):
+        """ TODO: Docstring """
+        corpora_total = {}
+        corpora_total["config"] = flag_dict
+        removed_paragraphs = []
+        for current_doc, filename in data:
+            print(len(current_doc.paragraphs))
+            corpora_current : list[dict] = []
+            i = 0
+            doc_paragraphs = current_doc.paragraphs
+            #headings should be removed separately (different paragraphs to remove together)
+            if flag_dict["paragraph_filters"]["headings"]:
+                corpora_with_headings_removed, removed_headings = ParagraphModifier.remove_headings(doc_paragraphs)   
+                doc_paragraphs = corpora_with_headings_removed
+                removed_paragraphs.extend(removed_headings)
+ 
+            while i < len(doc_paragraphs):
+                #For each paragraph, check the flag dictionary
+                corpora_current.append({})
+                corpora_current[-1]["text"] = doc_paragraphs[i].text
+                corpora_current[-1]["style"] = doc_paragraphs[i].style.name
+                #print(f"Style: {corpora_current[-1]['style']} : {corpora_current[-1]['text']}")
+                
+                if flag_dict["text_transformations"]["stop_words"]: 
+                    corpora_current[-1]["text"] = ParagraphModifier.remove_stop_words(corpora_current[i]["text"])
+
+                if flag_dict["text_transformations"]["lemmatization"]:
+                    corpora_current[i]["text"] = ParagraphModifier.lemmatisation(corpora_current[i]["text"])
+
+                if flag_dict["text_transformations"]["stemming"]:
+                    corpora_current[i]["text"] = ParagraphModifier.stemming(corpora_current[i]["text"])
+                #Remove empty paragraphs
+                #TODO If paragraphs get removed here appending to removed_paragraphs does not make much sense because order
+                elif doc_paragraphs[i].text == "":
+                     #print("Removing paragraph: empty paragraph") 
+                     del corpora_current[-1]
+
+                i += 1
+            corpora_total[filename] = corpora_current
+        return corpora_total
+            
+    def _load(self, dest_str: str, data):
         """
         TODO: Docstring
         """
