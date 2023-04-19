@@ -1,7 +1,17 @@
+import spacy;
+from spacy.lang.nl.examples import sentences;
+
 class ParagraphModifier():
     @staticmethod
     def lemmatisation(paragraph_text: str) -> str:
-        pass
+        nlp = spacy.load("nl_core_news_sm")
+        doc = nlp(paragraph_text)
+        modified_paragraph = paragraph_text
+        for word in doc:
+            if word.pos_ == "VERB":
+                print(word, word.lemma_)
+                modified_paragraph = modified_paragraph.replace(f"{word}", f"{word.lemma_}")
+        return modified_paragraph
 
     @staticmethod
     def stemming(paragraph_text: str) -> str:
