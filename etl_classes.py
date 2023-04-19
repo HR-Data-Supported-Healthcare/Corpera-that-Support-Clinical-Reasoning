@@ -3,6 +3,7 @@ import jsonpickle
 from docxcompose.composer import Composer
 from paragraph_modifier import ParagraphModifier
 from base_etl_class import BaseETL
+from json import loads
 
 #TODO: Perhaps classes can be stored in seperate files for less total imports
 #TODO: Revise class structure idea, might not be necessary
@@ -87,7 +88,7 @@ class DynamicETL(BaseETL):
         transformed_data = self._transform(extracted_data, flag_dict)
         self._load(dest_dir, transformed_data)
 
-    def _transform(self, data: list[Document], flag_dict: dict={}, ):
+    def _transform(self, data: list[Document], flag_dict: dict={}):
         """ TODO: Docstring """
         corpora_total = {}
         corpora_total["config"] = flag_dict
@@ -111,13 +112,18 @@ class DynamicETL(BaseETL):
                 #print(f"Style: {corpora_current[-1]['style']} : {corpora_current[-1]['text']}")
                 
                 if flag_dict["text_transformations"]["stop_words"]: 
-                    corpora_current[-1]["text"] = ParagraphModifier.remove_stop_words(corpora_current[i]["text"])
+                    print("removing stop words")
+                    with open('stopwords.json', 'r') as file:
+                        stopwords = loads(file.read())  # list of dutch stopwords
+                    corpora_current[-1]["text"] = ParagraphModifier.remove_stop_words(corpora_current[-1]["text"], stopwords)
 
                 if flag_dict["text_transformations"]["lemmatization"]:
-                    corpora_current[i]["text"] = ParagraphModifier.lemmatisation(corpora_current[i]["text"])
+                    print("applying lemmatization")
+                    corpora_current[-1]["text"] = ParagraphModifier.lemmatisation(corpora_current[-1]["text"])
 
                 if flag_dict["text_transformations"]["stemming"]:
-                    corpora_current[i]["text"] = ParagraphModifier.stemming(corpora_current[i]["text"])
+                    print("applying stemming")
+                    corpora_current[-1]["text"] = ParagraphModifier.stemming(corpora_current[-1]["text"])
                 #Remove empty paragraphs
                 #TODO If paragraphs get removed here appending to removed_paragraphs does not make much sense because order
                 elif doc_paragraphs[i].text == "":
