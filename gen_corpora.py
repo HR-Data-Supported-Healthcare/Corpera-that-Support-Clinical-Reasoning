@@ -10,6 +10,7 @@ from prompt_generator import PromptSystem
 from etl_classes.demo_etl import DemoETL
 from etl_classes.aggregate_etl import AggregateETL
 from etl_classes.dynamic_etl import DynamicETL
+from init import init
 
 #TODO: "Implement flags
 #TODO: Comments/docstrings
@@ -49,11 +50,12 @@ def set_flags(user_answers):
     CONFIG["text_transformations"]["stemming"] = user_answers["STEMMING_FLAG"]
 
 if __name__ == "__main__":
-    prompt_system = PromptSystem()
-    prompt_system.run()
-    set_flags(prompt_system.user_answers)
+    init(DATA_DIR, OUTPUT_DIR) # checks whether the source and destination files exist
+    # prompt_system = PromptSystem()
+    # prompt_system.run()
+    # set_flags(prompt_system.user_answers)
     
-    ###Select which pipeline to use (uncomment)
-    #use_demo_etl()
-    #use_aggregate_etl()
-    use_dynamic_etl()
+    # ###Select which pipeline to use (uncomment)
+    use_demo_etl()
+    # use_aggregate_etl()
+    # use_dynamic_etl()
