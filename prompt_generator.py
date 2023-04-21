@@ -12,7 +12,6 @@ class PromptSystem:
 
     def ask_question(self, prompt):
         while True:
-            print('\n'*100)
 
             if prompt["key"] == "STEMMING_FLAG" and self.skip_stemming:
                 break
@@ -31,43 +30,45 @@ class PromptSystem:
             
             else:
                 print("Invalid answer. Please answer with 'y' or 'n'.")
-        
-        print("User answers:", self.user_answers)
     
     def run(self):
-        use_default_settings = self.ask_for_default_settings()
+        chosen_pipeline = self.ask_for_pipeline()
 
-        if(use_default_settings):
+        if(chosen_pipeline == "DYNAMIC_ETL"):
             self.set_default_settings()
-            return 'AGGREGATE_ETL'
-        
-        use_demo_etl = self.ask_for_demo_etl()
+            return 'DYNAMIC_ETL'
             
-        if(use_demo_etl):
+        if(chosen_pipeline == "DEMO_ETL"):
             return 'DEMO_ETL'
 
-        for prompt in self.prompts:
-            self.ask_question(prompt)
-            return 'AGGREGATE_ETL'
+        if(chosen_pipeline == "CUSTOM_DYNAMIC_ETL"):
+            print('\n'*100)
+            print('--- Define the parameters ---')
+            for prompt in self.prompts:
+                self.ask_question(prompt)
+            return 'DYNAMIC_ETL'
 
 
-    def ask_for_default_settings(self):
-        demo_etl = input("Do you want to use the default ETL-settings? (y/n)")
+    def ask_for_pipeline(self):
         while True:
-            if demo_etl.lower() == "y":
+            print('\n'*100)
+            print("--- Which ETL pipeline would you like to use? (1/2/3) ---")
+            print("1.\t Dynamic ETL with default settings\n2.\t Dynamic ETL with custom settings\n3.\t Demo ETL")
+            pipeline = input("Pipeline: ")
+
+            if pipeline.lower() == "1":
                 print("Using default parameters for ETL...")
-                return True
-            if demo_etl.lower() == "n":
-                return False
+                return "DYNAMIC_ETL"
             
-    def ask_for_demo_etl(self):
-        demo_etl = input("Do you want to use the Demo ETL? (y/n)")
-        while True:
-            if demo_etl.lower() == "y":
-                print("Using Demo ETL...")
-                return True
-            if demo_etl.lower() == "n":
-                return False
+            if pipeline.lower() == "2":
+                return "CUSTOM_DYNAMIC_ETL"
+            
+            if pipeline.lower() == "3":
+                return "DEMO_ETL"
+            
+            else:
+                print("Invalid answer.")
+            
             
     def set_default_settings(self):
         self.user_answers["LEMMATIZATION_FLAG"] = True

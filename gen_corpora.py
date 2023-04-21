@@ -55,8 +55,8 @@ def choose_pipeline():
     pipeline = prompt_system.run()
     set_flags(prompt_system.user_answers)
 
-    if pipeline == 'AGGREGATE_ETL':
-        use_aggregate_etl()
+    if pipeline == 'DYNAMIC_ETL':
+        use_dynamic_etl()
         
     if pipeline == 'DEMO_ETL':
         use_demo_etl()
@@ -69,6 +69,6 @@ if __name__ == "__main__":
     choose_pipeline()
 
     # ###Manually select which pipeline to use (uncomment)
-    #use_demo_etl()
+    # use_demo_etl()
     # use_aggregate_etl()
     # use_dynamic_etl()
