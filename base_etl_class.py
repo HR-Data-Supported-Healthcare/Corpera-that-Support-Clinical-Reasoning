@@ -12,6 +12,10 @@ class BaseETL(ABC):
 
     def _execute_etl(self, data_dir: str, dest_dir: str) -> None:
         extracted_data = self._extract(data_dir)
+
+        if len(extracted_data) == 0:
+            exit(f"Exiting ETL. There are no files to transform. Please make sure there is available data in {data_dir}")
+
         transformed_data = self._transform(extracted_data)
         self._load(dest_dir, transformed_data)
 
@@ -19,7 +23,10 @@ class BaseETL(ABC):
         """ TODO: Docstring """
         doc_list : list [Document] = []
         for filename in os.listdir(data_dir):
-            doc_list.append((Document(f"{data_dir}/{filename}"), filename))
+            if filename.endswith('.docx'):
+                print(f"[EXTRACT] Extracted docx file '{filename}'")
+                doc_list.append((Document(f"{data_dir}/{filename}"), filename))
+
         return doc_list
     
     @abstractmethod

@@ -74,7 +74,7 @@ class DemoETL(BaseETL):
         TODO: Docstring
         """
         json_str = jsonpickle.encode(data)
-        with open (dest_str, "w") as f:
+        with open(dest_str, "w") as f:
             f.write(json_str)
 
 class DynamicETL(BaseETL):
@@ -139,7 +139,7 @@ class DynamicETL(BaseETL):
         TODO: Docstring
         """
         json_str = jsonpickle.encode(data)
-        with open (dest_str, "w") as f:
+        with open(dest_str, "w") as f:
             f.write(json_str)
 
 class AggregateETL(BaseETL):
