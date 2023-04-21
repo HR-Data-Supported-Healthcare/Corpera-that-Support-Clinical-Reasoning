@@ -89,52 +89,52 @@ class DynamicETL(BaseETL):
         transformed_data = self._transform(extracted_data, flag_dict)
         self._load(dest_dir, transformed_data)
 
-    def _transform(self, data: list[Document], flag_dict: dict={}):
+    def _transform(self, data: list[Document], flag_dict: dict):
         """ TODO: Docstring """
         corpora_total = {}
         corpora_total["config"] = flag_dict
         removed_paragraphs = []
         for current_doc, filename in data:
-            print(len(current_doc.paragraphs))
-            corpora_current : list[dict] = []
-            i = 0
+            current_doc_corpora : list[dict] = []
             doc_paragraphs = current_doc.paragraphs
             #headings should be removed separately (different paragraphs to remove together)
             if flag_dict["paragraph_filters"]["headings"]:
                 corpora_with_headings_removed, removed_headings = ParagraphModifier.remove_headings(doc_paragraphs)   
                 doc_paragraphs = corpora_with_headings_removed
                 removed_paragraphs.extend(removed_headings)
- 
-            while i < len(doc_paragraphs):
-                #For each paragraph, check the flag dictionary
-                corpora_current.append({})
-                corpora_current[-1]["text"] = doc_paragraphs[i].text
-                corpora_current[-1]["style"] = doc_paragraphs[i].style.name
-                #print(f"Style: {corpora_current[-1]['style']} : {corpora_current[-1]['text']}")
-                
-                if flag_dict["text_transformations"]["stop_words"]: 
-                    print("removing stop words")
-                    with open('stopwords.json', 'r') as file:
-                        stopwords = loads(file.read())  # list of dutch stopwords
-                    corpora_current[-1]["text"] = TextModifier.remove_stop_words(corpora_current[-1]["text"], stopwords)
-
-                if flag_dict["text_transformations"]["lemmatization"]:
-                    print("applying lemmatization")
-                    corpora_current[-1]["text"] = TextModifier.apply_lemmatization(corpora_current[-1]["text"])
-
-                if flag_dict["text_transformations"]["stemming"]:
-                    print("applying stemming")
-                    corpora_current[-1]["text"] = TextModifier.apply_stemming(corpora_current[-1]["text"])
-                #Remove empty paragraphs
-                #TODO If paragraphs get removed here appending to removed_paragraphs does not make much sense because order
-                elif doc_paragraphs[i].text == "":
-                     #print("Removing paragraph: empty paragraph") 
-                     del corpora_current[-1]
-
-                i += 1
-            corpora_total[filename] = corpora_current
+            current_doc_corpora.extend(self.__transform_paragraphs_from_doc(doc_paragraphs, flag_dict))
+            corpora_total[filename] = current_doc_corpora
         return corpora_total
             
+    def __transform_paragraphs_from_doc(self, doc_paragraphs, flag_dict: dict) -> list[dict]:
+        """TODO: Docstring"""
+        total_doc_corpora = []
+        for paragraph in doc_paragraphs:
+            #For each paragraph, check the flag dictionary
+            total_doc_corpora.append({})
+            total_doc_corpora[-1]["text"] = paragraph.text
+            total_doc_corpora[-1]["style"] = paragraph.style.name
+            
+            # Remove empty paragraphs
+            if paragraph.text == "" or paragraph.text == "\n":
+                del total_doc_corpora[-1]
+                continue
+
+            if flag_dict["text_transformations"]["stop_words"]: 
+                print("removing stop words")
+                with open('stopwords.json', 'r') as file:
+                    stopwords = loads(file.read())  # list of dutch stopwords
+                total_doc_corpora[-1]["text"] = TextModifier.remove_stop_words(total_doc_corpora[-1]["text"], stopwords)
+
+            if flag_dict["text_transformations"]["lemmatization"]:
+                print("applying lemmatization")
+                total_doc_corpora[-1]["text"] = TextModifier.apply_lemmatization(total_doc_corpora[-1]["text"])
+
+            if flag_dict["text_transformations"]["stemming"]:
+                print("applying stemming")
+                total_doc_corpora[-1]["text"] = TextModifier.apply_stemming(total_doc_corpora[-1]["text"])
+        return total_doc_corpora
+
     def _load(self, dest_str: str, data):
         """
         TODO: Docstring
