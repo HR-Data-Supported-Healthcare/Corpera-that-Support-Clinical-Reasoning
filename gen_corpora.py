@@ -47,15 +47,28 @@ def set_flags(user_answers):
     CONFIG["text_transformations"]["lemmatization"] = user_answers["LEMMATIZATION_FLAG"]
     CONFIG["text_transformations"]["stop_words"] = user_answers["STOP_WORDS_FLAG"]
     CONFIG["paragraph_filters"]["headings"] = user_answers["HEADINGS_FLAG"]
+    CONFIG["paragraph_filters"]["bibliography"] = user_answers["BIBLIOGRAPFY_FLAG"]
     CONFIG["text_transformations"]["stemming"] = user_answers["STEMMING_FLAG"]
+
+def choose_pipeline():
+    prompt_system = PromptSystem()
+    pipeline = prompt_system.run()
+    set_flags(prompt_system.user_answers)
+
+    if pipeline == 'AGGREGATE_ETL':
+        use_aggregate_etl()
+        
+    if pipeline == 'DEMO_ETL':
+        use_demo_etl()
+
 
 if __name__ == "__main__":
     init(DATA_DIR, OUTPUT_DIR) # checks whether the source and destination files exist
-    # prompt_system = PromptSystem()
-    # prompt_system.run()
-    # set_flags(prompt_system.user_answers)
-    
-    # ###Select which pipeline to use (uncomment)
-    use_demo_etl()
+
+    #Comment this function, if you do not want to use the prompt system
+    choose_pipeline()
+
+    # ###Manually select which pipeline to use (uncomment)
+    #use_demo_etl()
     # use_aggregate_etl()
     # use_dynamic_etl()
