@@ -2,6 +2,7 @@ from docx import Document
 import jsonpickle
 from docxcompose.composer import Composer
 from paragraph_modifier import ParagraphModifier
+from text_modifier import TextModifier
 from base_etl_class import BaseETL
 from json import loads
 
@@ -115,15 +116,15 @@ class DynamicETL(BaseETL):
                     print("removing stop words")
                     with open('stopwords.json', 'r') as file:
                         stopwords = loads(file.read())  # list of dutch stopwords
-                    corpora_current[-1]["text"] = ParagraphModifier.remove_stop_words(corpora_current[-1]["text"], stopwords)
+                    corpora_current[-1]["text"] = TextModifier.remove_stop_words(corpora_current[-1]["text"], stopwords)
 
                 if flag_dict["text_transformations"]["lemmatization"]:
                     print("applying lemmatization")
-                    corpora_current[-1]["text"] = ParagraphModifier.lemmatisation(corpora_current[-1]["text"])
+                    corpora_current[-1]["text"] = TextModifier.apply_lemmatization(corpora_current[-1]["text"])
 
                 if flag_dict["text_transformations"]["stemming"]:
                     print("applying stemming")
-                    corpora_current[-1]["text"] = ParagraphModifier.stemming(corpora_current[-1]["text"])
+                    corpora_current[-1]["text"] = TextModifier.apply_stemming(corpora_current[-1]["text"])
                 #Remove empty paragraphs
                 #TODO If paragraphs get removed here appending to removed_paragraphs does not make much sense because order
                 elif doc_paragraphs[i].text == "":
