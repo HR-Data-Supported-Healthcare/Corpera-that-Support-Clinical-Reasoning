@@ -6,9 +6,10 @@ output directory should be stored in constant `OUTPUT_DIR`
 """
 
 from datetime import datetime
-from etl_classes import DemoETL, AggregateETL, DynamicETL
 from prompt_generator import PromptSystem
-from etl_classes import DemoETL, AggregateETL
+from etl_classes.demo_etl import DemoETL
+from etl_classes.aggregate_etl import AggregateETL
+from etl_classes.dynamic_etl import DynamicETL
 
 #TODO: "Implement flags
 #TODO: Comments/docstrings

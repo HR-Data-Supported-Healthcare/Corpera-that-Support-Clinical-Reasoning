@@ -1,0 +1,5 @@
+docx==0.2.4
+docxcompose==1.4.0
+jsonpickle==3.0.1
+python_docx==0.8.11
+spacy==3.4.2
