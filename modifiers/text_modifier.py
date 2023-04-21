@@ -10,9 +10,7 @@ class TextModifier():
         doc = nlp(paragraph_text)
         modified_paragraph = paragraph_text
         for word in doc:
-            if word.pos_ == "VERB":
-                print(word, word.lemma_)
-                modified_paragraph = modified_paragraph.replace(f"{word}", f"{word.lemma_}")
+            modified_paragraph = modified_paragraph.replace(f"{word}", f"{word.lemma_}")
         return modified_paragraph
 
     @staticmethod
