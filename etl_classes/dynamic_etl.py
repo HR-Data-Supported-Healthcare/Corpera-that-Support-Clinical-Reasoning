@@ -13,7 +13,7 @@ class DynamicETL(BaseETL):
     def _execute_etl(self, data_dir: str, dest_dir: str, flag_dict: dict) -> None:
         extracted_data = self._extract(data_dir)
         transformed_data = self._transform(extracted_data, flag_dict)
-        self._load(dest_dir, transformed_data)
+        # self._load(dest_dir, transformed_data)
 
     def _transform(self, data: list[Document], flag_dict: dict):
         """ TODO: Docstring """
