@@ -1,3 +1,5 @@
+import re
+
 class ParagraphModifier():
     @staticmethod
     def remove_headings(paragraph_list: list[dict]) -> tuple:
@@ -32,31 +34,73 @@ class ParagraphModifier():
 
             # Remove Titlepage
             #TODO: is title a heading?
-            if not paragraph_style.startswith("title") and not paragraph_style.startswith("heading") and not paragraph_style.startswith("kop"):
-                print("Removing paragraph: heading")
+            if not paragraph_style.startswith("heading") and not paragraph_style.startswith("kop"):
                 kept_paragraphs.append(paragraph)
             else:
+                print("Removing paragraph: title or heading")
                 removed_paragraph_dict = {"text" : paragraph.text , "style" : paragraph.style.name }
                 removed_paragraphs.append(removed_paragraph_dict)
 
         return kept_paragraphs, removed_paragraphs  
-                
+
     @staticmethod
-    def remove_bibliography(paragraph_list: list[dict]) -> tuple:
-        # Remove source list
+    def remove_title(paragraph_list: list[dict]) -> tuple:
         """
-        if "bibliography" in current_doc.paragraphs[i].style.name.lower() or current_doc.paragraphs[i].text.lower().startswith("literatuurlijst"):
-                print("Removing paragraph: source list")
-                pass
+        Removes title and contactinformation from docs TODO: contact info too? Could be confusing
         """
         removed_paragraphs = []
-        i = 0
-        while i < len(paragraph_list):
-            # Remove table of contents
-            if "bibliography" in paragraph_list[i].style.name.lower() or paragraph_list[i].text.lower().startswith("literatuurlijst"):
-                print("Removing paragraph: source list")
-                removed_paragraph_dict = {"text" : paragraph_list[i].text , "style" : paragraph_list[i].style.name }
+        kept_paragraphs = []
+        for paragraph in paragraph_list: 
+            paragraph_style: str = paragraph.style.name.lower()
+            # Remove Titlepage
+            #TODO: more robust regex for contactgegevens paragraphs (has structure)
+            if paragraph_style.startswith("title") or paragraph_style.startswith("contactgegevens") or paragraph.text.lower().startswith("ondergetekende"):
+                print("Removing paragraph: title or heading")
+                removed_paragraph_dict = {"text" : paragraph.text , "style" : paragraph.style.name }
                 removed_paragraphs.append(removed_paragraph_dict)
-                del paragraph_list[i]
+            else:
+                kept_paragraphs.append(paragraph)
+        return kept_paragraphs, removed_paragraphs  
 
-        return paragraph_list, removed_paragraphs
+    @staticmethod
+    def remove_bibliography(paragraph_list: list[dict]) -> tuple:
+        """
+        Removes bibliography and appendix TODO: Appendix too? Could be confusing
+        """
+        # Remove source list
+        removed_paragraphs = []
+        kept_paragraphs = []
+        for i, paragraph in enumerate(paragraph_list): 
+            paragraph_style: str = paragraph.style.name.lower()
+            paragraph_text: str = paragraph.text.lower()
+
+            #Try to catch a bib paragraph, can just remove all paragraphs afterwards TODO: Dangerous
+            if "bibliography" in paragraph_style or paragraph_text.startswith("literatuurlijst") or "geraadpleegd op " in paragraph_text:
+                #removing complete bibliography + appendix
+                removed_paragraph_list = [{"text": p.text, "style" : p.style.name} for p in paragraph_list[i:]]
+                removed_paragraphs.extend(removed_paragraph_list)
+                break
+            else:
+                kept_paragraphs.append(paragraph)
+
+        return kept_paragraphs, removed_paragraphs 
+    
+    @staticmethod
+    def remove_tables_figures(paragraph_list: list[dict]) -> tuple:
+        """
+        Removes text explaining tables and figures from corpora (e.g: "Figuur 1.1: "This is a figure")
+        """
+        # Remove source list
+        removed_paragraphs = []
+        kept_paragraphs = []
+        for i, paragraph in enumerate(paragraph_list): 
+            paragraph_text: str = paragraph.text.lower()
+            #TODO: Figuur 2A, Figuur/tabel romeinse cijfering -> sigh
+            if re.match("^(figuur|tabel)\s[1-9](\.([1-9]|[1-9][1-9])(:|\.)|(:|\.)).*$", paragraph_text):
+                print("removing table or figure")
+                removed_paragraph_dict = {"text" : paragraph.text , "style" : paragraph.style.name }
+                removed_paragraphs.append(removed_paragraph_dict)
+            else:
+                kept_paragraphs.append(paragraph)
+
+        return kept_paragraphs, removed_paragraphs 

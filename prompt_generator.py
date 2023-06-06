@@ -2,15 +2,16 @@ class PromptSystem:
 
     def __init__(self):
         self.user_answers = {"LEMMATIZATION_FLAG": False, "STEMMING_FLAG": False,
-                             "STOP_WORDS_FLAG": False, "HEADINGS_FLAG": False, "BIBLIOGRAPFY_FLAG": False}
+                             "STOP_WORDS_FLAG": False, "HEADINGS_FLAG": False, "BIBLIOGRAPFY_FLAG": False, "TITLE_FLAG": False, "TABFIG_FLAG": False}
         self.prompts = [
             {"text": "Do you want to use lemmatization?",
                 "key": "LEMMATIZATION_FLAG"},
             {"text": "Do you you want to use stemming", "key": "STEMMING_FLAG"},
             {"text": "Do you want to remove stop words?", "key": "STOP_WORDS_FLAG"},
             {"text": "Do you want to remove headings?", "key": "HEADINGS_FLAG"},
-            {"text": "Do you want to remove the bibliography?",
-                "key": "BIBLIOGRAPFY_FLAG"}
+            {"text": "Do you want to remove the bibliography?", "key": "BIBLIOGRAPFY_FLAG"}, 
+            {"text" : "Do you want to remove the titlepage?", "key" : "TITLE_FLAG"},
+            {"text" : "Do you want to remove tables and figure appendix?", "key" : "TABFIG_FLAG"}
         ]
         self.skip_stemming = False
 
