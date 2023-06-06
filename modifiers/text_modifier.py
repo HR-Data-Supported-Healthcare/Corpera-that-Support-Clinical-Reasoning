@@ -21,6 +21,7 @@ class TextModifier():
         modified_paragraph = ""
         for word in paragraph_text.split():
             modified_paragraph += stemmer.stem(word) + " "
+        modified_paragraph.rstrip()
         return modified_paragraph
 
     @staticmethod
