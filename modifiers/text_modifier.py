@@ -1,4 +1,6 @@
 import spacy
+import nltk
+from nltk.stem.snowball import SnowballStemmer
 from spacy.lang.nl.examples import sentences
 from string import punctuation
 
@@ -15,7 +17,12 @@ class TextModifier():
 
     @staticmethod
     def apply_stemming(paragraph_text: str) -> str:
-        pass
+        stemmer = SnowballStemmer("dutch")
+        modified_paragraph = ""
+        for word in paragraph_text.split():
+            modified_paragraph += stemmer.stem(word) + " "
+        modified_paragraph.rstrip()
+        return modified_paragraph
 
     @staticmethod
     def remove_stop_words(paragraph_text: str, stopwords) -> str:
