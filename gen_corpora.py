@@ -19,11 +19,14 @@ from init import init
 LEMMATIZATION_FLAG = False
 STEMMING_FLAG = False
 STOP_WORDS_FLAG = False
+TITLE_FLAG = False
+TABFIG_FLAG = False
 HEADINGS_FLAG = True
 BIBLIOGRAPFY_FLAG = False
 
 #CONFIG = {"stop_words" : STOP_WORDS_FLAG, "stemming" : STEMMING_FLAG, "lemmatization": LEMMATIZATION_FLAG,}
-CONFIG = {"paragraph_filters" : { "headings": HEADINGS_FLAG, "bibliography" : BIBLIOGRAPFY_FLAG},
+CONFIG = {"paragraph_filters" : 
+          { "titlepage" : TITLE_FLAG, "headings": HEADINGS_FLAG, "bibliography" : BIBLIOGRAPFY_FLAG, "tables_and_figures" : TABFIG_FLAG},
         "text_transformations" : 
           {"stop_words" : STOP_WORDS_FLAG, "stemming" : STEMMING_FLAG, "lemmatization": LEMMATIZATION_FLAG}
           }
@@ -47,7 +50,9 @@ def set_flags(user_answers):
     CONFIG["text_transformations"]["lemmatization"] = user_answers["LEMMATIZATION_FLAG"]
     CONFIG["text_transformations"]["stop_words"] = user_answers["STOP_WORDS_FLAG"]
     CONFIG["paragraph_filters"]["headings"] = user_answers["HEADINGS_FLAG"]
+    CONFIG["paragraph_filters"]["titlepage"] = user_answers["TITLE_FLAG"]
     CONFIG["paragraph_filters"]["bibliography"] = user_answers["BIBLIOGRAPFY_FLAG"]
+    CONFIG["paragraph_filters"]["tables_and_figures"] = user_answers["TABFIG_FLAG"]
     CONFIG["text_transformations"]["stemming"] = user_answers["STEMMING_FLAG"]
 
 def choose_pipeline():
