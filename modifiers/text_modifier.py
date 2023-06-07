@@ -9,10 +9,16 @@ nlp = spacy.load("nl_core_news_sm")
 class TextModifier():
     @staticmethod
     def apply_lemmatization(paragraph_text: str) -> str:
+        #these puncts should be attached to preceding word
+        punct_list = ".!,;:]}\\/)?"
         doc = nlp(paragraph_text)
-        modified_paragraph = paragraph_text
+        modified_paragraph = ""
         for word in doc:
-            modified_paragraph = modified_paragraph.replace(f"{word}", f"{word.lemma_}")
+            #if word is punctuation, remove trailing whitespace if applicaple
+            if word.lemma_ in punct_list:
+                modified_paragraph = modified_paragraph.rstrip()
+            modified_paragraph = modified_paragraph + word.lemma_ + " "
+        modified_paragraph = modified_paragraph.rstrip()
         return modified_paragraph
 
     @staticmethod
