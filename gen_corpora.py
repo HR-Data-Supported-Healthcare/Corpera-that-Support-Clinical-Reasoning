@@ -10,7 +10,7 @@ from prompt_generator import PromptSystem
 from etl_classes.demo_etl import DemoETL
 from etl_classes.aggregate_etl import AggregateETL
 from etl_classes.dynamic_etl import DynamicETL
-from init import init
+from init_source_dest_dir import init_source_dest_dirs
 
 #TODO: "Implement flags
 #TODO: Comments/docstrings
@@ -68,7 +68,7 @@ def choose_pipeline():
 
 
 if __name__ == "__main__":
-    init(DATA_DIR, OUTPUT_DIR) # checks whether the source and destination files exist
+    init_source_dest_dirs(DATA_DIR, OUTPUT_DIR) # checks whether the source and destination files exist
 
     #Comment this function, if you do not want to use the prompt system
     choose_pipeline()
