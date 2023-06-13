@@ -1,6 +1,6 @@
 import os
 
-def init(src_dir: str, dest_dir: str) -> None:
+def init_source_dest_dirs(src_dir: str, dest_dir: str) -> None:
     """Checks whether the source and destination folders exist in the project. 
     If not, then this function creates empty folders"""
     source_dir_exists = os.path.isdir(src_dir)

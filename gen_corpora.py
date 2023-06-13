@@ -10,12 +10,9 @@ from pipeline_config_system import PipelineConfigSystem
 from etl_classes.demo_etl import DemoETL
 from etl_classes.aggregate_etl import AggregateETL
 from etl_classes.dynamic_etl import DynamicETL
+from init_source_dest_dir import init_source_dest_dirs
 from data_classes.flag import ParagraphFlags, TextFlags, FlagContainer
 from data_classes.etl_pipelines import PipelineType
-from init import init
-
-#TODO: "Implement flags
-#TODO: Comments/docstrings
 
 #CONSTANTS
 USE_PIPELINE_CONFIG_SYSTEM = True
@@ -43,5 +40,5 @@ def execute_pipelines():
         use_demo_etl()
 
 if __name__ == "__main__":
-    init(DATA_DIR, OUTPUT_DIR) # checks whether the source and destination files exist
+    init_source_dest_dirs(DATA_DIR, OUTPUT_DIR) # checks whether the source and destination files exist
     execute_pipelines()
