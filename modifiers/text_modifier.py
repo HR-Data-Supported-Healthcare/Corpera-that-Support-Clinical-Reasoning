@@ -4,7 +4,7 @@ from nltk.stem.snowball import SnowballStemmer
 from spacy.lang.nl.examples import sentences
 from string import punctuation
 
-nlp = spacy.load("nl_core_news_sm")
+nlp = spacy.load("nl_core_news_lg")
 
 class TextModifier():
     @staticmethod
