@@ -17,7 +17,11 @@ To use DynamicETL, follow these steps:
 
 1. Install the required dependencies:
    ```shell
-   pip install spacy nltk
+   pip install spacy 
+   pip install nltk
+   pip install jsonpickle
+   pip install python-docx
+   pip install docxcompose
    ```
 
 2. Download the required NLTK data by running the following Python code:
