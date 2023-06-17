@@ -64,6 +64,11 @@ class DynamicETL(BaseETL):
     def __transform_paragraphs_from_doc(self, doc_paragraphs, text_flags: TextFlags) -> list[dict]:
         """TODO: Docstring"""
         total_doc_corpora = []
+        #prepare stop_words if necessary
+        if text_flags.remove_stop_words:
+            with open('stopwords.json', 'r') as file:
+                stopwords = loads(file.read())  # list of dutch stopwords
+
         for paragraph in doc_paragraphs: 
             #TODO: Should not do this here
             # Remove empty paragraphs
@@ -77,10 +82,8 @@ class DynamicETL(BaseETL):
 
             current_paragraph_obj = {"text" : paragraph.text.strip(), "style": paragraph.style.name} #TODO: use Paragraph class from data_classes -> paragraph.py
             #For each paragraph, check the flag dictionary
-            if text_flags.remove_stop_words: 
+            if text_flags.remove_stop_words:
                 print("removing stop words")
-                with open('stopwords.json', 'r') as file:
-                    stopwords = loads(file.read())  # list of dutch stopwords
                 current_paragraph_obj["text"] = TextModifier.remove_stop_words(current_paragraph_obj["text"], stopwords)
 
             if text_flags.apply_lemmatization:
@@ -90,7 +93,13 @@ class DynamicETL(BaseETL):
             if text_flags.apply_stemming:
                 print("applying stemming")
                 current_paragraph_obj["text"] = TextModifier.apply_stemming(current_paragraph_obj["text"])
+
+            if text_flags.remove_punctuation:
+                print("removing punctuation")
+                current_paragraph_obj["text"] = TextModifier.remove_punctuation(current_paragraph_obj["text"])
+
             total_doc_corpora.append(current_paragraph_obj)
+
         return total_doc_corpora
 
     def _load(self, dest_str: str, data):
