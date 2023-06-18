@@ -3,14 +3,15 @@ from dataclasses import dataclass
 
 @dataclass     
 class ParagraphFlags():
-     remove_title_page:     bool = True
-     remove_headings:       bool = True
-     remove_bibliography:   bool = True
-     remove_tables_and_figures:   bool = True
+     remove_title_page:         bool = True
+     remove_headings:           bool = True
+     remove_bibliography:       bool = True
+     remove_tables_and_figures: bool = True
 
 @dataclass
 class TextFlags():
-    remove_stop_words:       bool = True
+    remove_stop_words:      bool = True
+    remove_punctuation:     bool = True
     apply_stemming:         bool = False
     apply_lemmatization:    bool = True
 
