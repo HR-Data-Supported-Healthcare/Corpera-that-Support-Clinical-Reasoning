@@ -164,6 +164,6 @@ class DynamicETL(BaseETL):
             None
 
         """
-        json_str = jsonpickle.encode(data)
+        json_str = jsonpickle.encode(data, unpicklable=False)
         with open(dest_str, "w") as f:
             f.write(json_str)
