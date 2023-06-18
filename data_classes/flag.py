@@ -25,3 +25,13 @@ class FlagContainer():
     paragraph_flags:    ParagraphFlags
     text_flags:         TextFlags
     #training_flags:     CorporaGenerationFlags
+
+@dataclass
+class VisualizeFlags:
+    visualize_stop_words: bool
+    visualize_stemming: bool
+    visualize_lemmatization: bool
+    visualize_bibliography: bool
+    visualize_table_figures: bool
+    visualize_titlepage: bool
+    visualize_headings: bool
