@@ -4,17 +4,26 @@ from nltk.stem.snowball import SnowballStemmer
 from spacy.lang.nl.examples import sentences
 from string import punctuation
 
-nlp = spacy.load("nl_core_news_sm")
+nlp = spacy.load("nl_core_news_lg")
 
 class TextModifier():
     @staticmethod
     def apply_lemmatization(paragraph_text: str) -> str:
-        #these puncts should be attached to preceding word
+        """
+        Apply lemmatization to the given paragraph text.
+
+        Args:
+            paragraph_text (str): The paragraph text.
+
+        Returns:
+            str: The modified paragraph text after lemmatization.
+        """
+        # These puncts should be attached to the preceding word
         punct_list = ".!,;:]}\\/)?"
         doc = nlp(paragraph_text)
         modified_paragraph = ""
         for word in doc:
-            #if word is punctuation, remove trailing whitespace if applicaple
+            # If word is punctuation, remove trailing whitespace if applicable
             if word.lemma_ in punct_list:
                 modified_paragraph = modified_paragraph.rstrip()
             modified_paragraph = modified_paragraph + word.lemma_ + " "
@@ -23,6 +32,15 @@ class TextModifier():
 
     @staticmethod
     def apply_stemming(paragraph_text: str) -> str:
+        """
+        Apply stemming to the given paragraph text.
+
+        Args:
+            paragraph_text (str): The paragraph text.
+
+        Returns:
+            str: The modified paragraph text after stemming.
+        """
         stemmer = SnowballStemmer("dutch")
         modified_paragraph = ""
         for word in paragraph_text.split():
@@ -32,22 +50,39 @@ class TextModifier():
 
     @staticmethod
     def remove_stop_words(paragraph_text: str, stopwords) -> str:
-        # functions used to normalize words
-        def remove_punctuation(chars):
-            return chars.translate(str.maketrans('', '', punctuation))
+        """
+        Remove stop words from the given paragraph text.
 
-        def to_lower(word):
-            return str.lower(word)
+        Args:
+            paragraph_text (str): The paragraph text.
+            stopwords: The list of stop words to be removed.
 
-        # read all words as a list, this list will be modified along the loop
+        Returns:
+            str: The modified paragraph text after stop word removal.
+        """
+        # Read all words as a list, this list will be modified along the loop
         text = paragraph_text.split(' ')
         return_list = []
-        # the following loop directly removes a word from `text` if the word is found in the `stopwords` list
+        # The following loop directly removes a word from `text` if the word is found in the `stopwords` list
         for index, word in enumerate(text):
-            # words must be normalized so that it can be matched with the stopwords list
-            normalized_word = to_lower(remove_punctuation(word))
+            # Words must be normalized so that they can be matched with the stop words list
+            normalized_word = TextModifier.remove_punctuation(word).lower()
 
             if normalized_word not in stopwords:
-                return_list.append(text[index])  # delete entry from `text` by index
+                return_list.append(text[index])  # Delete entry from `text` by index
 
         return ' '.join(return_list)
+
+    @staticmethod
+    def remove_punctuation(paragraph_text: str, punctuation_list: list[str]=punctuation) -> str:
+        """
+        Remove punctuation from the given paragraph text.
+
+        Args:
+            paragraph_text (str): The paragraph text.
+            punctuation_list (list[str], optional): List of punctuation characters to be removed. Defaults to string.punctuation.
+
+        Returns:
+            str: The modified paragraph text after punctuation removal.
+        """
+        return paragraph_text.translate(str.maketrans('', '', punctuation))
