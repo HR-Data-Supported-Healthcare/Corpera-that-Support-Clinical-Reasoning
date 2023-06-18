@@ -12,11 +12,11 @@ USE_PIPELINE_CONFIG_SYSTEM = True
 DATA_DIR =  "./data"
 OUTPUT_DIR = "./output"
 
-def use_demo_etl():
+def use_demo_etl() -> None:
     """Executes the DemoETL process to transform data and save the output in JSON format."""
     DemoETL(DATA_DIR, f"{OUTPUT_DIR}/Demo {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.json")
 
-def use_dynamic_etl(config: FlagContainer):
+def use_dynamic_etl(config: FlagContainer) -> None:
     """
     Executes the DynamicETL process to dynamically transform data based on the provided configuration
     and save the output in JSON format.
@@ -26,11 +26,11 @@ def use_dynamic_etl(config: FlagContainer):
     """
     DynamicETL(DATA_DIR, f"{OUTPUT_DIR}/Dyna {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.json", config)
 
-def use_aggregate_etl():
+def use_aggregate_etl() -> None:
     """Executes the AggregateETL process to aggregate data and save the output in DOCX format."""
     AggregateETL(DATA_DIR, f"{OUTPUT_DIR}/Aggre {datetime.now().strftime('%m-%d-%Y,%H-%M-%S')}.docx")
 
-def execute_pipelines():
+def execute_pipelines() -> None:
     """
     Determines and executes the appropriate ETL pipeline based on the configuration.
 

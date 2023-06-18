@@ -2,26 +2,24 @@ from docx import Document
 from docx.shared import RGBColor
 from modifiers.paragraph_identifier import ParagraphIdentifier
 from modifiers.text_modifier import TextModifier
-from dataclasses import dataclass
-
-@dataclass
-class VisualizeFlags:
-    visualize_stop_words: bool
-    visualize_stemming: bool
-    visualize_lemmatization: bool
-    visualize_bibliography: bool
-    visualize_table_figures: bool
-    visualize_titlepage: bool
-    visualize_headings: bool
+from data_classes.flag import VisualizeFlags
+from data_classes.paragraph import Paragraph
+import json
 
 @staticmethod
-def visualize_text_modifications(paragraph_list: list[dict], vis_flags: VisualizeFlags, stop_words_list: list[str] = []) -> None:
-    """TODO: Docstring
+def visualize_text_modifications(paragraph_list: list[Paragraph], vis_flags: VisualizeFlags, stop_words_list: list[str] = []) -> Document:
+    """
+    Exports `docx` document containing text paragraphs, coloring paragraphs based on `TextModifier` criteria and given flags.
+    Also colors stop words
+
+    Args:
+        paragraph_list (list[Paragraph]): List of paragraphs to apply modifications on and generate docx document from
+        vis_flags (VisualizeFlags): Configuration flags for paragraph and text modifications (which ones should be colored and applied).
+        stop_words_list (list[str]) (optional, default = []): stop words to color in paragraphs 
     if vis_flags.lemmatization and vis_flags.stemming both true, only does lemmatization
     """
-    
     #colors for each paragraph to differentiate
-    stop_words_color = RGBColor(255, 0, 0) #Red
+    stop_words_color = RGBColor(255, 255, 255) #White
     headings_color = RGBColor(0, 0, 255) #Blue
     titlepage_color = RGBColor(179, 46, 161) #Purple
     bibliography_color = RGBColor(213, 165, 68) #Brown
@@ -57,9 +55,7 @@ def visualize_text_modifications(paragraph_list: list[dict], vis_flags: Visualiz
         else:
             color_paragraph(paragraph_text , new_p, main_color)
 
-    #TODO: return document and save elsewhere
-    visualized_document.save('new_test.docx')
-    return
+    return visualized_document
 
 def color_paragraph(text: str, paragraph, main_color: RGBColor, stop_words_list: list[str]= None, stop_words_color: RGBColor = None):
     if stop_words_list is None:
@@ -84,263 +80,16 @@ def color_paragraph(text: str, paragraph, main_color: RGBColor, stop_words_list:
     remaining_run.font.color.rgb = main_color
     return paragraph
 
-"""
-def color_stop_words(text: str, stop_words: list[str], paragraph, color: RGBColor = RGBColor(255, 0, 0)):
-
-    TODO: DocString
-    Returns doxc `Document` paragraph object
-
-    
-    split_text = text.split()
-    current_run_text : str = ""
-    for word in split_text:
-        if word.lower() not in stop_words: 
-            current_run_text = current_run_text + word + " "
-        else:
-            if len(current_run_text) > 0:
-                paragraph.add_run(current_run_text)
-                current_run_text = ""
-            run = paragraph.add_run(word + " ")
-            run.font.color.rgb = color
-    #Add the remaining words to paragraph
-    paragraph.add_run(current_run_text)
-    return paragraph
-"""
-
 #Constants
 DATA_DIR = "./data/BL_casereport1.docx"
-
+STOP_WORDS_DIR = "./stopwords.json"
+OUTPUT_DIR = "./"
+OUTPUT_NAME = "example.docx"
 
 if __name__ == "__main__":
-    sw = [
-    "aan",
-    "af",
-    "al",
-    "alle",
-    "alleen",
-    "alles",
-    "als",
-    "alsmede",
-    "ander",
-    "andere",
-    "anders",
-    "ben",
-    "bij",
-    "bijna",
-    "bijv",
-    "bijvoorbeeld",
-    "binnen",
-    "boven",
-    "bovendien",
-    "bv",
-    "daar",
-    "daaraan",
-    "daarbij",
-    "daarbuiten",
-    "daardoor",
-    "daarin",
-    "daarna",
-    "daarnaast",
-    "daarom",
-    "daaronder",
-    "daarop",
-    "daarover",
-    "daartoe",
-    "daaruit",
-    "daarvan",
-    "daarvoor",
-    "dan",
-    "dat",
-    "de",
-    "der",
-    "deze",
-    "die",
-    "dit",
-    "door",
-    "doordat",
-    "dus",
-    "dwz",
-    "echter",
-    "een",
-    "eens",
-    "eerst",
-    "en",
-    "enz",
-    "er",
-    "ermee",
-    "erg",
-    "ergens",
-    "ervan",
-    "ervaring",
-    "ervoor",
-    "etc",
-    "even",
-    "evenals",
-    "eveneens",
-    "ge",
-    "geen",
-    "gehad",
-    "geweest",
-    "geworden",
-    "had",
-    "hadden",
-    "heb",
-    "hebben",
-    "hebt",
-    "heden",
-    "heeft",
-    "hem",
-    "hen",
-    "het",
-    "hier",
-    "hieraan",
-    "hierbij",
-    "hierdoor",
-    "hierin",
-    "hiermee",
-    "hierna",
-    "hieronder",
-    "hierop",
-    "hiertoe",
-    "hieruit",
-    "hiervan",
-    "hiervoor",
-    "hij",
-    "hoe",
-    "hoewel",
-    "hun",
-    "ik",
-    "in",
-    "indien",
-    "is",
-    "ja",
-    "je",
-    "jij",
-    "jullie",
-    "kan",
-    "kon",
-    "konden",
-    "kunt",
-    "kunnen",
-    "maar",
-    "maw",
-    "me",
-    "mee",
-    "men",
-    "met",
-    "middels",
-    "mijn",
-    "misschien",
-    "mits",
-    "na",
-    "naar",
-    "naast",
-    "nadat",
-    "nee",
-    "net",
-    "niet",
-    "niets",
-    "nl",
-    "nog",
-    "nogal",
-    "nou",
-    "nu",
-    "of",
-    "om",
-    "omdat",
-    "ondermeer",
-    "ons",
-    "onze",
-    "ook",
-    "op",
-    "over",
-    "overig",
-    "overige",
-    "overigens",
-    "reeds",
-    "sinds",
-    "slechts",
-    "soms",
-    "tbv",
-    "te",
-    "tegen",
-    "ten",
-    "tenzij",
-    "ter",
-    "terug",
-    "terwijl",
-    "tevens",
-    "tijdens",
-    "toch",
-    "toe",
-    "toen",
-    "tot",
-    "totdat",
-    "tussen",
-    "uit",
-    "uw",
-    "vaak",
-    "van",
-    "vanaf",
-    "vandaar",
-    "vanuit",
-    "vanwege",
-    "vervolgens",
-    "volgens",
-    "voor",
-    "vooraf",
-    "vooral",
-    "voordat",
-    "voorheen",
-    "voornamelijk",
-    "waar",
-    "waaraan",
-    "waarbij",
-    "waardoor",
-    "waarin",
-    "waarmee",
-    "waarna",
-    "waarom",
-    "waarop",
-    "waaronder",
-    "waaruit",
-    "waarvan",
-    "waarvoor",
-    "wanneer",
-    "want",
-    "waren",
-    "was",
-    "wat",
-    "we",
-    "weer",
-    "wel",
-    "welk",
-    "welke",
-    "wellicht",
-    "werd",
-    "werden",
-    "wie",
-    "wij",
-    "worden",
-    "wordt",
-    "zal",
-    "ze",
-    "zeer",
-    "zelf",
-    "zelfs",
-    "zich",
-    "zij",
-    "zijn",
-    "zo",
-    "zoals",
-    "zodat",
-    "zonder",
-    "zowel",
-    "zou",
-    "zouden",
-    "zult",
-    "zullen"
-]
+    with open (STOP_WORDS_DIR, "r") as f:
+        sw = json.load(f)
     flags = VisualizeFlags(True, False, True, True, True, True, True)
     doc = Document(DATA_DIR)
-    visualize_text_modifications(doc.paragraphs, flags, sw )
+    new_doc = visualize_text_modifications(doc.paragraphs, flags, sw )
+    new_doc.save(f"{OUTPUT_DIR}/{OUTPUT_NAME}")
