@@ -1,0 +1,51 @@
+{
+    "filename.docx": [
+        [
+            "paragraph 1 text...",
+            [
+                [
+                    0,
+                    5,
+                    "PERSON"
+                ],
+                [
+                    14,
+                    28,
+                    "ETC"
+                ]
+            ]
+        ],
+        [
+            "paragraph 2 text...",
+            [
+                [
+                    0,
+                    5,
+                    "PERSON"
+                ],
+                [
+                    14,
+                    28,
+                    "ETC"
+                ]
+            ]
+        ]
+    ],
+    "filename2.docx": [
+        [
+            "paragraph 1 text...,",
+            [
+                [
+                    0,
+                    5,
+                    "PERSON"
+                ],
+                [
+                    14,
+                    28,
+                    "ETC"
+                ]
+            ]
+        ]
+    ]
+}
